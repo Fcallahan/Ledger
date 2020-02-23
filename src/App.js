@@ -9,27 +9,14 @@ class App extends Component {
     super(props);
     this.state = {
       authenticated: false,
-      pw: ""
+      pw: "",
+      user: null
     };
-  }
-
-  render() {
-    let stuff = null;
-    if (!this.state.authenticated) {
-      stuff = this.renderLogIn();
-    } else {
-      stuff = this.renderLedger();
-    }
-
-    return <div className="container">{stuff}</div>;
   }
 
   handleChange = event => {
     this.setState({ pw: event.target.value });
   };
-
-  // { "description": "new shoes", "amount": 90.0, "date": "2020-02-20" }
-  // { "description": "new maw", "amount": 90.0, "date": "2020-02-21" }
 
   handleSubmit = event => {
     event.preventDefault();
@@ -45,6 +32,17 @@ class App extends Component {
       }
     });
   };
+
+  render() {
+    let stuff = null;
+    if (!this.state.authenticated) {
+      stuff = this.renderLogIn();
+    } else {
+      stuff = this.renderLedger();
+    }
+
+    return <div className="container">{stuff}</div>;
+  }
 
   renderLogIn() {
     return (
