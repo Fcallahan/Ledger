@@ -19,7 +19,7 @@ const Ledger = ({ user }) => {
         console.log("No such document!");
       }
     })();
-  });
+  }, [user]);
 
   return (
     <table>

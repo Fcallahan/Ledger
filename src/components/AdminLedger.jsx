@@ -1,99 +1,83 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import * as firebase from "firebase";
 
 import { firestore } from "../firebase";
 import Ledger from "./Ledger";
 
-class AdminLedger extends Component {
-  constructor(props) {
-    super(props);
+const AdminLedger = () => {
+  const [amount, setAmount] = useState("");
+  const [date, setDate] = useState("");
+  const [description, setDescription] = useState("");
+  const [user, setUser] = useState(null);
+  const [userIds, setUserIds] = useState([]);
 
-    this.state = { users: [], user: null };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     var ledger = firestore.collection("ledger");
-    ledger.get().then(collection => {
+    (async function getUsers() {
+      const collection = await ledger.get();
       const ids = collection.docs.map(d => d.id).filter(id => id !== "admin");
       console.log(ids);
 
-      this.setState({ users: ids });
-    });
-  }
+      setUserIds(ids);
+    })();
+  }, []);
 
-  handleUserSelect = user => {
-    this.setState({ user: user });
-  };
-
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    var docRef = firestore.collection("ledger").doc(this.state.user);
+    var docRef = firestore.collection("ledger").doc(user);
     docRef.update({
       records: firebase.firestore.FieldValue.arrayUnion(
         JSON.stringify({
-          description: this.state.description,
-          amount: this.state.amount,
-          date: this.state.date
+          description: description,
+          amount: amount,
+          date: date
         })
       )
     });
   };
 
-  handleAmount = event => {
-    this.setState({ amount: event.target.value });
-  };
+  const users = userIds.map(user => (
+    <li key={user}>
+      <button onClick={() => setUser(user)}>{user}</button>
+    </li>
+  ));
 
-  handleDate = event => {
-    this.setState({ date: event.target.value });
-  };
-
-  handleDescription = event => {
-    this.setState({ description: event.target.value });
-  };
-
-  render() {
-    const users = this.state.users.map(user => (
-      <li key={user}>
-        <button onClick={() => this.handleUserSelect(user)}>{user}</button>
-      </li>
-    ));
-    return (
+  return (
+    <div>
       <div>
-        <div>
-          <h3>Users</h3>
-          <ul>{users}</ul>
-        </div>
-        <div>
-          <h3>{this.state.user}</h3>
-          {this.state.user && (
-            <div>
-              <Ledger user={this.state.user} />
-              <form onSubmit={this.handleSubmit}>
-                <p>{this.state.user}</p>
-                <input
-                  type="text"
-                  placeholder="description"
-                  onChange={this.handleDescription}
-                />
-                <input
-                  type="text"
-                  className="inputTest"
-                  placeholder="amount"
-                  onChange={this.handleAmount}
-                />
-                <input
-                  className="inputTest"
-                  type="date"
-                  onChange={this.handleDate}
-                />
-                <input className="inputTest" type="submit" value="add entry" />
-              </form>
-            </div>
-          )}
-        </div>
+        <h3>Users</h3>
+        <ul>{users}</ul>
       </div>
-    );
-  }
-}
+      <div>
+        <h3>{user}</h3>
+        {user && (
+          <div>
+            <Ledger user={user} />
+            <form onSubmit={handleSubmit}>
+              <p>{user}</p>
+              <input
+                type="text"
+                placeholder="description"
+                onChange={event => setDescription(event.target.value)}
+              />
+              <input
+                type="text"
+                className="inputTest"
+                placeholder="amount"
+                onChange={event => setAmount(event.target.value)}
+              />
+              <input
+                className="inputTest"
+                type="date"
+                onChange={event => setDate(event.target.value)}
+              />
+              <input className="inputTest" type="submit" value="add entry" />
+            </form>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default AdminLedger;
