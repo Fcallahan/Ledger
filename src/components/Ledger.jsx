@@ -10,12 +10,21 @@ class Ledger extends Component {
       entries: [],
       user: props.user
     };
+    console.log(this.state.user);
   }
 
   componentDidMount() {
-    var docRef = firestore.collection("ledger").doc(this.state.user);
+    this.updateUser(this.props.user);
+  }
 
-    docRef.onSnapshot(doc => {
+  updateUser(user) {
+    if (this.state.unsubscribeCallback) {
+      this.state.unsubscribeCallback();
+    }
+
+    var docRef = firestore.collection("ledger").doc(user);
+
+    var unsubscribe = docRef.onSnapshot(doc => {
       if (doc.exists) {
         console.log("Document data:", doc.data());
         const jsonEntries = doc.data().records.map(e => JSON.parse(e));
@@ -27,6 +36,16 @@ class Ledger extends Component {
         console.log("No such document!");
       }
     });
+
+    this.setState({ unsubscribeCallback: unsubscribe });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.user !== prevProps.user) {
+      // Check if it's a new user, you can also use some unique property, like the ID  (this.props.user.id !== prevProps.user.id)
+      // this.setState({ user: this.props.user });
+      this.updateUser(this.props.user);
+    }
   }
 
   componentWillUnmount() {}

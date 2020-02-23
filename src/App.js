@@ -51,7 +51,7 @@ class App extends Component {
         <form onSubmit={this.handleSubmit}>
           <label>
             Password:
-            <input type="text" name="pass" onChange={this.handleChange} />
+            <input type="password" name="pass" onChange={this.handleChange} />
           </label>
           <input type="submit" value="Submit" />
         </form>

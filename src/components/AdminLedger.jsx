@@ -65,10 +65,11 @@ class AdminLedger extends Component {
         </div>
         <div>
           <h3>{this.state.user}</h3>
-          {this.state.user ? (
+          {this.state.user && (
             <div>
               <Ledger user={this.state.user} />
               <form onSubmit={this.handleSubmit}>
+                <p>{this.state.user}</p>
                 <input
                   type="text"
                   placeholder="description"
@@ -76,14 +77,19 @@ class AdminLedger extends Component {
                 />
                 <input
                   type="text"
+                  className="inputTest"
                   placeholder="amount"
                   onChange={this.handleAmount}
                 />
-                <input type="date" onChange={this.handleDate} />
-                <input type="submit" value="add" />
+                <input
+                  className="inputTest"
+                  type="date"
+                  onChange={this.handleDate}
+                />
+                <input className="inputTest" type="submit" value="add entry" />
               </form>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     );
