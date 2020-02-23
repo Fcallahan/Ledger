@@ -22,12 +22,12 @@ const Ledger = ({ user }) => {
   }, [user]);
 
   return (
-    <table>
+    <table className="table">
       <thead>
         <tr>
-          <th>description</th>
-          <th>amount</th>
-          <th>date</th>
+          <th>Description</th>
+          <th>Amount</th>
+          <th>Date</th>
         </tr>
       </thead>
       <tbody>

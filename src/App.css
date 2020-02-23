@@ -18,8 +18,8 @@
   font-size: large;
 }
 
-.inputTest {
-  margin-left: 10px;
+.m-left {
+  margin-left: 40px;
 }
 
 @keyframes App-logo-spin {

@@ -36,45 +36,68 @@ const AdminLedger = () => {
     });
   };
 
-  const users = userIds.map(user => (
-    <li key={user}>
-      <button onClick={() => setUser(user)}>{user}</button>
-    </li>
-  ));
+  const users = userIds.map(userId => {
+    let classNames = ["list-group-item"];
+    if (userId === user) {
+      classNames.push("active");
+    }
+
+    return (
+      <li
+        key={userId}
+        className={classNames.join(" ")}
+        onClick={() => setUser(userId)}>
+        {userId}
+      </li>
+    );
+  });
 
   return (
-    <div>
-      <div>
-        <h3>Users</h3>
-        <ul>{users}</ul>
-      </div>
-      <div>
-        <h3>{user}</h3>
-        {user && (
-          <div>
-            <Ledger user={user} />
-            <form onSubmit={handleSubmit}>
-              <p>{user}</p>
-              <input
-                type="text"
-                placeholder="description"
-                onChange={event => setDescription(event.target.value)}
-              />
-              <input
-                type="text"
-                className="inputTest"
-                placeholder="amount"
-                onChange={event => setAmount(event.target.value)}
-              />
-              <input
-                className="inputTest"
-                type="date"
-                onChange={event => setDate(event.target.value)}
-              />
-              <input className="inputTest" type="submit" value="add entry" />
-            </form>
-          </div>
-        )}
+    <div className="container">
+      <div className="row">
+        <div className="col-3">
+          <h3>Users</h3>
+          <ul className="list-group">{users}</ul>
+        </div>
+        <div className="col-9">
+          <h3>{user}</h3>
+          {user && (
+            <div className="container">
+              <Ledger user={user} />
+              <form className="row" onSubmit={handleSubmit}>
+                <div className="input-group">
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="description"
+                      onChange={event => setDescription(event.target.value)}
+                    />
+                  </div>
+                  <div className="m-left">
+                    <input
+                      type="text"
+                      placeholder="amount"
+                      onChange={event => setAmount(event.target.value)}
+                    />
+                  </div>
+                  <div className="m-left">
+                    <input
+                      type="date"
+                      onChange={event => setDate(event.target.value)}
+                    />
+                  </div>
+                  <div className="m-left">
+                    <input
+                      className="btn btn-primary"
+                      type="submit"
+                      value="add entry"
+                    />
+                  </div>
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
