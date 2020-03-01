@@ -6,19 +6,15 @@ const Ledger = ({ user }) => {
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    (async function update() {
-      var docRef = firestore.collection("ledger").doc(user);
-      let doc = await docRef.get();
+    let docRef = firestore.collection("ledger").doc(user);
+    docRef.onSnapshot(doc => {
       if (doc.exists) {
-        //console.log("Document data:", doc.data());
-        console.log("Exists");
-        const jsonEntries = doc.data().records.map(e => JSON.parse(e));
+        const jsonEntries = doc.data().records.reverse().map(e => JSON.parse(e));
         setRecords(jsonEntries);
       } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
+        console.log(`document (${user}) not found!`);
       }
-    })();
+    });
   }, [user]);
 
   return (

@@ -3,9 +3,10 @@ import * as firebase from "firebase";
 
 import { firestore } from "../firebase";
 import Ledger from "./Ledger";
+import Balance from "./Balance";
 
 const AdminLedger = () => {
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState(null);
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [user, setUser] = useState(null);
@@ -22,18 +23,32 @@ const AdminLedger = () => {
     })();
   }, []);
 
+  const clearInputs = () => {
+    setAmount();
+    setDate("");
+    setDescription("");
+  };
+
   const handleSubmit = event => {
     event.preventDefault();
+
+    clearInputs();
+
     var docRef = firestore.collection("ledger").doc(user);
     docRef.update({
       records: firebase.firestore.FieldValue.arrayUnion(
         JSON.stringify({
           description: description,
-          amount: amount,
+          amount: Number(amount),
           date: date
         })
       )
     });
+  };
+
+  const handleUserSelect = userId => {
+    clearInputs();
+    setUser(userId);
   };
 
   const users = userIds.map(userId => {
@@ -43,58 +58,69 @@ const AdminLedger = () => {
     }
 
     return (
-      <li
-        key={userId}
-        className={classNames.join(" ")}
-        onClick={() => setUser(userId)}>
-        {userId}
-      </li>
+      <table className="table table-borderless">
+        <tbody>
+          <tr
+            key={userId}
+            className={classNames.join(" ")}
+            onClick={() => handleUserSelect(userId)}>
+            {userId}
+            <padLeft>
+              <Balance userId={userId} />
+            </padLeft>
+          </tr>
+        </tbody>
+      </table>
     );
   });
 
   return (
     <div className="container">
       <div className="row">
-        <div className="col-3">
-          <h3>Users</h3>
+        <div className="col-md my-auto-scroll">
+          <h3 className="app-title">Users</h3>
           <ul className="list-group">{users}</ul>
         </div>
-        <div className="col-9">
-          <h3>{user}</h3>
+        <div className="col-md my-auto-scroll">
+          <h3 className="app-title">{user}</h3>
           {user && (
-            <div className="container">
-              <Ledger user={user} />
+            <div>
               <form className="row" onSubmit={handleSubmit}>
-                <div className="input-group">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="description"
-                      onChange={event => setDescription(event.target.value)}
-                    />
-                  </div>
-                  <div className="m-left">
-                    <input
-                      type="text"
-                      placeholder="amount"
-                      onChange={event => setAmount(event.target.value)}
-                    />
-                  </div>
-                  <div className="m-left">
-                    <input
-                      type="date"
-                      onChange={event => setDate(event.target.value)}
-                    />
-                  </div>
-                  <div className="m-left">
-                    <input
-                      className="btn btn-primary"
-                      type="submit"
-                      value="add entry"
-                    />
-                  </div>
+                <div className="col-md input-group">
+                  <input
+                    type="text"
+                    placeholder="description"
+                    className="form-control"
+                    onChange={event => setDescription(event.target.value)}
+                    value={description}
+                  />
+                </div>
+                <div className="col-md">
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="amount"
+                    onChange={event => setAmount(event.target.value)}
+                    value={amount}
+                  />
+                </div>
+                <div className="col-md">
+                  <input
+                    type="date"
+                    className="form-control"
+                    onChange={event => setDate(event.target.value)}
+                    value={date}
+                  />
+                </div>
+                <div className="col-md">
+                  <input
+                    className="btn btn-primary form-control"
+                    type="submit"
+                    value="Add Entry"
+                  />
                 </div>
               </form>
+              <Ledger user={user} />
             </div>
           )}
         </div>
