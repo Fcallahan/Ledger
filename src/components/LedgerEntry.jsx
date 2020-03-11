@@ -13,7 +13,7 @@ const LedgerEntry = ({ description, amount, date }) => {
     <tr className={amount > 0 ? "table-success" : "table-warning"}>
       <td>{description}</td>
       <td>{formattedAmount}</td>
-      <td>{date}</td>
+      <td>{new Date(date).toLocaleDateString()}</td>
     </tr>
   );
 };

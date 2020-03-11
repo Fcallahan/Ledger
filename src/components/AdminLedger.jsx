@@ -4,10 +4,13 @@ import * as firebase from "firebase";
 import { firestore } from "../firebase";
 import Ledger from "./Ledger";
 import Balance from "./Balance";
+import ReactDatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 const AdminLedger = () => {
   const [amount, setAmount] = useState(null);
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date());
   const [description, setDescription] = useState("");
   const [user, setUser] = useState(null);
   const [userIds, setUserIds] = useState([]);
@@ -58,72 +61,59 @@ const AdminLedger = () => {
     }
 
     return (
-      <table className="table table-borderless">
-        <tbody>
-          <tr
-            key={userId}
-            className={classNames.join(" ")}
-            onClick={() => handleUserSelect(userId)}>
-            {userId}
-            <padLeft>
-              <Balance userId={userId} />
-            </padLeft>
-          </tr>
-        </tbody>
-      </table>
+      <div key={userId} className={classNames.join(" ")} onClick={() => handleUserSelect(userId)}>
+        {userId}
+        <span className="float-right">
+          <Balance userId={userId} />
+        </span>
+      </div>
     );
   });
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md my-auto-scroll">
-          <h3 className="app-title">Users</h3>
-          <ul className="list-group">{users}</ul>
-        </div>
-        <div className="col-md my-auto-scroll">
-          <h3 className="app-title">{user}</h3>
-          {user && (
-            <div>
-              <form className="row" onSubmit={handleSubmit}>
-                <div className="col-md input-group">
-                  <input
-                    type="text"
-                    placeholder="description"
-                    className="form-control"
-                    onChange={event => setDescription(event.target.value)}
-                    value={description}
-                  />
-                </div>
-                <div className="col-md">
-                  <input
-                    type="number"
-                    className="form-control"
-                    placeholder="amount"
-                    onChange={event => setAmount(event.target.value)}
-                    value={amount}
-                  />
-                </div>
-                <div className="col-md">
-                  <input
-                    type="date"
-                    className="form-control"
-                    onChange={event => setDate(event.target.value)}
-                    value={date}
-                  />
-                </div>
-                <div className="col-md">
-                  <input
-                    className="btn btn-primary form-control"
-                    type="submit"
-                    value="Add Entry"
-                  />
-                </div>
-              </form>
-              <Ledger user={user} />
-            </div>
-          )}
-        </div>
+    <div className="row">
+      <div className="col-md my-auto-scroll">
+        <h3 className="app-title">Users</h3>
+        <ul className="list-group">{users}</ul>
+      </div>
+      <div className="col-md my-auto-scroll">
+        <h3 className="app-title">{user}</h3>
+        {user && (
+          <div>
+            <form className="row" onSubmit={handleSubmit}>
+              <div className="col-md input-group">
+                <input
+                  type="text"
+                  placeholder="description"
+                  className="form-control"
+                  onChange={event => setDescription(event.target.value)}
+                  value={description}
+                />
+              </div>
+              <div className="col-md">
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="amount"
+                  onChange={event => setAmount(event.target.value)}
+                  value={amount}
+                />
+              </div>
+              <div className="col-md input-group">
+                <ReactDatePicker
+                  className="form-control"
+                  selected={date}
+                  placeholderText="mm/dd/yyyy"
+                  onChange={date => setDate(date)}
+                />
+              </div>
+              <div className="col-md">
+                <input className="btn btn-primary form-control" type="submit" value="Add Entry" />
+              </div>
+            </form>
+            <Ledger user={user} />
+          </div>
+        )}
       </div>
     </div>
   );

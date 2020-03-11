@@ -3,7 +3,6 @@ import { firestore } from "../firebase";
 
 const Balance = ({ userId }) => {
   const [records, setRecords] = useState([]);
-
   useEffect(() => {
     let docRef = firestore.collection("ledger").doc(userId);
     docRef.onSnapshot(doc => {
@@ -19,22 +18,16 @@ const Balance = ({ userId }) => {
     });
   }, [userId]);
 
-  function sum() {
-    let sum = 0;
-    for (let rec of records) {
-      sum += rec.amount;
-      console.log(rec);
-      console.log(JSON.stringify(rec));
-    }
-
-    return sum;
+  let sum = 0;
+  for (let rec of records) {
+    sum += rec.amount;
+    console.log(rec);
+    console.log(JSON.stringify(rec));
   }
 
   return (
-    <span className="table">
-      <tbody>
-        <b> {sum()}</b>
-      </tbody>
+    <span className={`badge badge-pill ${sum >= 0 ? "badge-success" : "badge-danger"}`}>
+      <b> {sum}</b>
     </span>
   );
 };

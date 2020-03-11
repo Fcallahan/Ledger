@@ -10,10 +10,6 @@ body {
   overflow: scroll; */
 }
 
-.padLeft {
-  margin-right: 50px;
-}
-
 .my-auto-scroll {
   overflow-y: scroll;
 }
@@ -23,12 +19,7 @@ body {
 }
 
 body {
-  background: linear-gradient(
-    90deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(9, 118, 121, 1) 0%,
-    rgba(0, 212, 255, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 118, 121, 1) 0%, rgba(0, 212, 255, 1) 100%);
 }
 
 .vertical-center {
